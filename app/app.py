@@ -143,7 +143,7 @@ def index():
         return f.read()
 
 # 文件上传配置
-UPLOAD_FOLDER = '/upload'
+UPLOAD_FOLDER = 'upload'
 ALLOWED_EXTENSIONS = {'pdf'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # 创建上传文件夹（如果不存在）
