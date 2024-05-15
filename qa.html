@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDF Quick Reader - Q&A</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        height: 100vh;
+      }
+
+      #pdfViewer {
+        width: 40%;
+        height: 100vh;
+        border-right: 2px solid #ccc;
+      }
+
+      #qaSection {
+        width: 60%;
+        padding: 20px;
+      }
+
+      #question {
+        margin-bottom: 20px;
+      }
+
+      #response {
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        padding: 20px;
+        box-sizing: border-box;
+        height: 50vh;
+        overflow-y: auto;
+      }
+
+      #footer {
+        position: fixed;
+        bottom: 10px;
+        width: 100%;
+        text-align: center;
+        font-size: 12px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="pdfViewer">
+      <!-- PDF Viewer Goes Here -->
+      <iframe
+        id="pdfIframe"
+        src=""
+        width="100%"
+        height="100%"
+        frameborder="0"
+      ></iframe>
+    </div>
+
+    <div id="qaSection">
+      <div id="question">
+        <h2>Question</h2>
+        <input
+          type="text"
+          id="query"
+          name="query"
+          placeholder="Enter your query"
+          style="width: 80%; margin-right: 10px"
+        />
+        <button onclick="search()">Search</button>
+      </div>
+      <div id="response">
+        <!-- Responses Go Here -->
+      </div>
+    </div>
+
+    <div id="footer">Made by Hao</div>
+
+    <script>
+      $(document).ready(function () {
+        $.get("/upload", function (data) {
+          if (data && data.length > 0) {
+            var latestPdf = "/pdf_viewer/" + data[0]; // 使用新的路由
+            $("#pdfIframe").attr("src", latestPdf);
+          } else {
+            console.log("No PDF files found.");
+          }
+        });
+      });
+
+      function search() {
+        var query = $("#query").val();
+        $.post("/search", { query: query }, function (data) {
+          $("#response").html(data);
+        });
+      }
+    </script>
+  </body>
+</html>
