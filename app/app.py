@@ -54,8 +54,8 @@ def to_keywords(input_string):
 
 # 1. 创建Elasticsearch连接
 es = Elasticsearch(
-    hosts=['xxxxxxxxxxxxxxx'],  # 服务地址与端口
-    http_auth=("xxxxxx, xxxxxxxxx"),  # 用户名，密码
+    hosts=['xxxxxxxxxxxxxxxx'],  # 服务地址与端口
+    http_auth=("xxxxxxxxxx", "xxxxxxxxxxxxxxxxxxxxx"),  # 用户名，密码
 )
 
 # 2. 定义索引名称
@@ -76,7 +76,14 @@ def search(query_string, top_n=3):
         }
     }
     res = es.search(index=index_name, query=search_query, size=top_n)
-    return [hit["_source"]["text"] for hit in res["hits"]["hits"]]
+    
+    # 检查是否有匹配结果
+    if res["hits"]["total"]["value"] == 0:
+        # 如果匹配结果为空，则返回所有原始内容
+        return paragraphs
+    else:
+        # 返回匹配结果中的文本内容
+        return [hit["_source"]["text"] for hit in res["hits"]["hits"]]
 
 from openai import OpenAI
 import os
@@ -136,7 +143,7 @@ def index():
         return f.read()
 
 # 文件上传配置
-UPLOAD_FOLDER = 'upload'
+UPLOAD_FOLDER = '/upload'
 ALLOWED_EXTENSIONS = {'pdf'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # 创建上传文件夹（如果不存在）
@@ -159,6 +166,7 @@ def upload_file():
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(file_path)
             # 提取文本内容并存储到Elasticsearch中
+            global paragraphs
             paragraphs = extract_text_from_pdf(file_path, min_line_length=10)
             actions = [
                 {
@@ -194,6 +202,7 @@ def pdf_viewer(filename):
 def search_result():
     user_query = request.form['query']
     search_results = search(user_query, 2)
+    print(search_results)
     prompt = build_prompt(prompt_template, info=search_results, query=user_query)
     response = get_completion(prompt)
     return response
