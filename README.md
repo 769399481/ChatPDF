@@ -51,7 +51,7 @@ PDF Quick Reader is a simple application built on Flask and Elasticsearch for qu
 3. Ask questions related to the content of the uploaded PDF.
 4. View the answers provided by the system.
 
-## Contributors
+## Contributor
 
 - Hao
 
