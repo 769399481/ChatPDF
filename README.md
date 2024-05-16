@@ -43,3 +43,18 @@ PDF Quick Reader is a simple application built on Flask and Elasticsearch for qu
    ```
    python app.py
    ```
+
+## Usage
+
+1. Access the application in your web browser.
+2. Upload a PDF file using the provided interface(Images and tables are currently not supported).
+3. Ask questions related to the content of the uploaded PDF.
+4. View the answers provided by the system.
+
+## Contributors
+
+- Hao
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
